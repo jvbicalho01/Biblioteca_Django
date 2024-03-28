@@ -7,7 +7,7 @@ from hashlib import sha256
 from .models import Usuario
 
 def login(request):
-    return HttpResponse('login')
+    return render(request, 'login.html')
 
 def cadastro(request):
     status = request.GET.get('status')
@@ -39,4 +39,5 @@ def valida_cadastro(request):
     except:
         return redirect('/auth/cadastro/?status=4')
 
-    # return HttpResponse(f'{nome} {email} {senha}')
+def valida_login(request):
+    
