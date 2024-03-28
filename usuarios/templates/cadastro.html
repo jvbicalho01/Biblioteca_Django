@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}
+
+Cadastro
+
+{% endblock %}
+
+{% block 'content' %}
+
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-md-3"></div>
+
+        <div class="col-md">
+            <h1>Cadastre-se</h1>
+            <hr>
+
+            <form action="{% url 'valida-cadastro' %}" method="POST">
+                {% csrf_token %}
+                <label>Nome</label>
+                <input class="form-control" type="text" name="nome" placeholder="Nome...">
+                <br>
+
+                <label>Email</label>
+                <input class="form-control" type="email" name="email" placeholder="Email...">
+                <br>
+
+                <label>Senha</label>
+                <input class="form-control" type="password" name="senha" placeholder="Senha...">
+                <br>
+
+                <input class="btn btn-info" type="submit" value="Enviar">
+
+            </form>
+        </div>
+
+        <div class="col-md-3"></div>
+    </div>
+</div>
+
+{% endblock %}
