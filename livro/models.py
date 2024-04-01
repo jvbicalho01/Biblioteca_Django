@@ -5,6 +5,7 @@ from usuarios.models import Usuario
 class Categoria(models.Model):
     nome = models.CharField(max_length=30)
     descricao = models.TextField()
+    usuario = models.ForeignKey(Usuario, on_delete=models.DO_NOTHING)
 
     def __str__(self) -> str:
         return self.nome
