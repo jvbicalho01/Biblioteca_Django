@@ -51,6 +51,34 @@
         <input type="submit" class="btn btn-success btn-lg" value="Salvar">
 
     </form>
+    <hr>
+
+    <h1>Histórico de empréstimo</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Data Empréstimo</th>
+                <th scope="col">Data Devolução</th>
+                <th scope="col">Tempo de duração</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emprestimo in emprestimos %}
+            <tr>
+                {% if emprestimo.nome_emprestado_anonimo == None %}
+                <th scope="row">{{emprestimo.nome_emprestado}}</th>
+                {% else %}
+                <th scope="row">{{emprestimo.nome_emprestado_anonimo}}</th>
+                {% endif %}
+                <td>{{emprestimo.data_emprestimo}}</td>
+                <td>{{emprestimo.data_devolucao}}</td>
+                <td></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 
