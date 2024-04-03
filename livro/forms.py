@@ -12,3 +12,11 @@ class CadastroLivro(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['usuario'].widget = forms.HiddenInput()
+
+class CategoriaLivro(forms.Form):
+    nome = forms.CharField(max_length=30)
+    descricao = forms.CharField(max_length=100)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['descricao'].widget = forms.Textarea()

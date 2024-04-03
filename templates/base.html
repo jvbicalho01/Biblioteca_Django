@@ -19,9 +19,9 @@
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand" href="{% url 'home' %}">Pythonando</a>
         {% if usuario_logado %}
-        <div>
+        <div style="display: flex; flex-direction: row; align-items: center; gap: 1.5rem;">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                Cadastrar livro
+                Cadastrar
             </button>
             <a href="{% url 'sair' %}" class="btn btn-danger">Sair</a>
         </div>
@@ -46,19 +46,71 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% url 'cadastrar-livro' %}" method="POST">
-                        {% csrf_token %}
-                        <table>
-                            {{form.as_table}}
-                        </table>
-                        <input type="submit" class="btn btn-success" value="Cadastrar">
-                    </form>
+                    <h5>Selecione o que deseja cadastrar</h5>
+                    <br>
+                    <div style="display: flex; align-items: center; flex-direction: row; gap: 1.5rem;">
+                        <button onclick="mostrar_form(1)" class="btn btn-info">Livro</button>
+                    <button onclick="mostrar_form(2)" class="btn btn-warning">Categoria</button>
+                    <button onclick="mostrar_form(3)" class="btn btn-primary">Empréstimo</button>
+                    </div>
+
+                    <br>
+                    <hr>
+
+                    <div style="display: none;" id="livro">
+                        <form action="{% url 'cadastrar-livro' %}" method="POST">
+                            {% csrf_token %}
+                            <table>
+                                {{form.as_table}}
+                            </table>
+                            <input type="submit" class="btn btn-success" value="Cadastrar">
+                        </form>
+                    </div>
+
+                    <div style="display: none;" id="categoria">
+                        <form action="{% url 'cadastrar-categoria' %}" method="POST">
+                            {% csrf_token %}
+                            <table>
+                                {{form_categoria.as_table}}
+                            </table>
+                            <input type="hidden" name="usuario" value="{{usuario_logado}}">
+                            <input class="btn btn-success" type="submit" value="Enviar">
+                        </form>
+                    </div>
+
+                    <div style="display: none;" id="emprestimo">
+                        Empréstimo
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 
     {% endif %}
+
+    <script>
+        function mostrar_form(value) {
+            livro = document.getElementById('livro')
+            categoria = document.getElementById('categoria')
+            emprestimo = document.getElementById('emprestimo')
+
+            if (value == 1) {
+                livro.style.display = 'block'
+                categoria.style.display = 'none'
+                emprestimo.style.display = 'none'
+            } else if (value == 2) {
+                categoria.style.display = 'block'
+                livro.style.display = 'none'
+                emprestimo.style.display = 'none'
+            } else if (value == 3) {
+                emprestimo.style.display = 'block'
+                livro.style.display = 'none'
+                categoria.style.display = 'none'
+            }
+        }
+
+    </script>
 
 </body>
 
