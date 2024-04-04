@@ -50,8 +50,8 @@
                     <br>
                     <div style="display: flex; align-items: center; flex-direction: row; gap: 1.5rem;">
                         <button onclick="mostrar_form(1)" class="btn btn-info">Livro</button>
-                    <button onclick="mostrar_form(2)" class="btn btn-warning">Categoria</button>
-                    <button onclick="mostrar_form(3)" class="btn btn-primary">Empréstimo</button>
+                        <button onclick="mostrar_form(2)" class="btn btn-warning">Categoria</button>
+                        <button onclick="mostrar_form(3)" class="btn btn-primary">Empréstimo</button>
                     </div>
 
                     <br>
@@ -79,7 +79,35 @@
                     </div>
 
                     <div style="display: none;" id="emprestimo">
-                        Empréstimo
+                        <div style="display: flex; flex-direction: row; align-items: center; gap: 1.5rem;">
+                            <button onclick="exibe_input_emprestado(1)" class="btn btn-success">Novo usuário</button>
+                            <button onclick="exibe_input_emprestado(2)" class="btn btn-dark">Usuário existente</button>
+                        </div>
+
+                        <br>
+
+                        <form id="form_emprestimo" action="{% url 'cadastrar-emprestimo' %}" method="POST">
+                            {% csrf_token %}
+                            <select style="display: none;" id="nome_emprestado" class="form-control" name="nome_emprestado">
+                                {% for usuario in usuarios %}
+                                <option value="{{usuario.id}}">{{usuario.nome}}</option>
+                                {% endfor %}
+                            </select>
+
+                            <br>
+                            <input id="nome_emprestado_anonimo" class="form-control" type="text"
+                                placeholder="Digite o nome para quem emprestou" name="nome_emprestado">
+                            <br>
+
+                            <select class="form-control" name="livro_emprestado">
+                                {% for livro in livros_emprestar %}
+                                <option value="{{livro.id}}">{{livro.nome}}</option>
+                                {% endfor %}
+                            </select>
+
+                            <br>
+                            <input class="btn btn-success" type="submit" value="Emprestar">
+                        </form>
                     </div>
 
                 </div>
@@ -110,6 +138,16 @@
             }
         }
 
+
+        function exibe_input_emprestado(value) {
+            if (value == 1) {
+                document.getElementById('nome_emprestado').style.display = 'none'
+                document.getElementById('nome_emprestado_anonimo').style.display = 'block'
+            } else if (value == 2) {
+                document.getElementById('nome_emprestado').style.display = 'block'
+                document.getElementById('nome_emprestado_anonimo').style.display = 'none'
+            }
+        }
     </script>
 
 </body>
