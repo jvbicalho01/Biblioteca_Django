@@ -8,4 +8,5 @@ urlpatterns = [
     path('excluir-livro/<int:id>/', views.excluir_livro, name='excluir-livro'),
     path('cadastrar-categoria/', views.cadastrar_categoria, name='cadastrar-categoria'),
     path('cadastrar-emprestimo/', views.cadastrar_emprestimo, name='cadastrar-emprestimo'),
+    path('devolver-livro/', views.devolver_livro, name='devolver-livro')
 ]

@@ -19,11 +19,21 @@
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand" href="{% url 'home' %}">Pythonando</a>
         {% if usuario_logado %}
-        <div style="display: flex; flex-direction: row; align-items: center; gap: 1.5rem;">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                Cadastrar
-            </button>
-            <a href="{% url 'sair' %}" class="btn btn-danger">Sair</a>
+        <div class="dropdown show">
+            <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Menu
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                <button type="button" class="btn btn-primary dropdown-item" data-toggle="modal"
+                    data-target="#exampleModal">
+                    Cadastrar
+                </button>
+                <a href="{% url 'sair' %}" class="btn btn-danger dropdown-item">Sair</a>
+                <div class="dropdown-divider"></div>
+                <p class="dropdown-item">Livros cadastrados: {{total_livros}}</p>
+            </div>
         </div>
         {% endif %}
     </nav>
@@ -52,6 +62,7 @@
                         <button onclick="mostrar_form(1)" class="btn btn-info">Livro</button>
                         <button onclick="mostrar_form(2)" class="btn btn-warning">Categoria</button>
                         <button onclick="mostrar_form(3)" class="btn btn-primary">Empréstimo</button>
+                        <button onclick="mostrar_form(4)" class="btn btn-danger">Devolução</button>
                     </div>
 
                     <br>
@@ -88,7 +99,8 @@
 
                         <form id="form_emprestimo" action="{% url 'cadastrar-emprestimo' %}" method="POST">
                             {% csrf_token %}
-                            <select style="display: none;" id="nome_emprestado" class="form-control" name="nome_emprestado">
+                            <select style="display: none;" id="nome_emprestado" class="form-control"
+                                name="nome_emprestado">
                                 {% for usuario in usuarios %}
                                 <option value="{{usuario.id}}">{{usuario.nome}}</option>
                                 {% endfor %}
@@ -110,6 +122,22 @@
                         </form>
                     </div>
 
+                    <div style="display: none;" id="devolucao">
+                        <form action="{% url 'devolver-livro' %}" method="POST">
+                            {% csrf_token %}
+
+                            <select class="form-control" name="id_livro_devolver" id="">
+                                {% for livro in livros_emprestados %}
+                                <option value="{{livro.id}}">{{livro.nome}}</option>
+                                {% endfor %}
+                            </select>
+
+                            <br>
+                            <input type="submit" class="btn btn-success" value="Devolver">
+                        </form>
+
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -122,22 +150,30 @@
             livro = document.getElementById('livro')
             categoria = document.getElementById('categoria')
             emprestimo = document.getElementById('emprestimo')
+            devolucao = document.getElementById('devolucao')
 
             if (value == 1) {
                 livro.style.display = 'block'
                 categoria.style.display = 'none'
                 emprestimo.style.display = 'none'
+                devolucao.style.display = 'none'
             } else if (value == 2) {
                 categoria.style.display = 'block'
                 livro.style.display = 'none'
                 emprestimo.style.display = 'none'
+                devolucao.style.display = 'none'
             } else if (value == 3) {
                 emprestimo.style.display = 'block'
                 livro.style.display = 'none'
                 categoria.style.display = 'none'
+                devolucao.style.display = 'none'
+            } else if (value == 4) {
+                emprestimo.style.display = 'none'
+                livro.style.display = 'none'
+                categoria.style.display = 'none'
+                devolucao.style.display = 'block'
             }
         }
-
 
         function exibe_input_emprestado(value) {
             if (value == 1) {
