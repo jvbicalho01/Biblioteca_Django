@@ -42,7 +42,9 @@ def ver_livro(request, id):
 
         if request.session.get('usuario') == livro.usuario.id:    
             usuario = Usuario.objects.get(id=request.session['usuario'])
-            categoria_livro = Categoria.objects.filter(usuario_id=request.session.get('usuario'))  
+            categoria_livro = Categoria.objects.filter(usuario_id=request.session.get('usuario')) 
+            livros = Livros.objects.filter(usuario=usuario)
+            total_livros = livros.count() 
             emprestimos = Emprestimo.objects.filter(livro=livro)
             form = CadastroLivro()
             form.fields['usuario'].initial = request.session['usuario']
@@ -64,7 +66,8 @@ def ver_livro(request, id):
                                                       'form_categoria': form_categoria,
                                                       'usuarios': usuarios,
                                                       'livros_emprestar': livros_emprestar,
-                                                      'livros_emprestados': livros_emprestados})
+                                                      'livros_emprestados': livros_emprestados,
+                                                      'total_livros': total_livros})
         
         else:
             return HttpResponse('Esse livro não é seu')
@@ -137,13 +140,36 @@ def alterar_livro(request):
     nome_livro = request.POST.get('nome_livro')
     autor = request.POST.get('autor')
     co_autor = request.POST.get('co_autor')
+    categoria_id = request.POST.get('categoria_id')
+    categoria = Categoria.objects.get(id=categoria_id)
 
     livro = Livros.objects.get(id=livro_id)
     if livro.usuario.id == request.session['usuario']:
         livro.nome = nome_livro
         livro.autor = autor
         livro.co_autor = co_autor
+        livro.categoria = categoria
         livro.save()
         return redirect(f'/livro/ver-livro/{livro_id}')
     else:
         return HttpResponse('erro')
+
+def seus_emprestimos(request):
+    usuario = Usuario.objects.get(id=request.session['usuario'])
+    emprestimos = Emprestimo.objects.filter(nome_emprestado=usuario)
+
+
+    return render(request, 'seus_emprestimos.html', {'usuario_logado': request.session['usuario'],
+                                                     'emprestimos': emprestimos})
+
+def processa_avaliacao(request):
+    id_livro = request.POST.get('id_livro')
+    id_emprestimo = request.POST.get('id_emprestimo')
+    opcoes = request.POST.get('opcoes')
+
+    #TODO: Verificar segurança
+    emprestimo = Emprestimo.objects.get(id=id_emprestimo)
+    emprestimo.avaliacao = opcoes
+    emprestimo.save()
+
+    return redirect(f'/livro/ver-livro/{id_livro}')

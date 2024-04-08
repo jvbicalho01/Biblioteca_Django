@@ -10,4 +10,6 @@ urlpatterns = [
     path('cadastrar-emprestimo/', views.cadastrar_emprestimo, name='cadastrar-emprestimo'),
     path('devolver-livro/', views.devolver_livro, name='devolver-livro'),
     path('alterar-livro', views.alterar_livro, name='alterar-livro'),
+    path('seus-emprestimos', views.seus_emprestimos, name='seus-emprestimos'),
+    path('processa-avaliacao', views.processa_avaliacao, name='processa-avaliacao'),
 ]

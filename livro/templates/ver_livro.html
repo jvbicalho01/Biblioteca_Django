@@ -42,12 +42,12 @@
 
         <p>
             <label>Categoria:</label>
-            <select style="width: 40%;" class="form-control" name="Categoria">
+            <select style="width: 40%;" class="form-control" name="categoria_id">
                 {% for i in categoria_livro %}
                 {% if livro.categoria == i %}
-                <option selected>{{i}}</option>
+                <option value="{{i.id}}" selected>{{i}}</option>
                 {% else %}
-                <option>{{i}}</option>
+                <option value="{{i.id}}">{{i}}</option>
                 {% endif %}
                 {% endfor %}
             </select>
@@ -93,24 +93,74 @@
                 <th scope="col">Data Empréstimo</th>
                 <th scope="col">Data Devolução</th>
                 <th scope="col">Tempo de duração</th>
+                <th scope="col">Avaliação</th>
             </tr>
         </thead>
         <tbody>
-            {% for emprestimo in emprestimos %}
+            {% for i in emprestimos %}
             <tr>
-                {% if emprestimo.nome_emprestado_anonimo == None %}
-                <th scope="row">{{emprestimo.nome_emprestado}}</th>
+                {% if i.nome_emprestado_anonimo == None %}
+                <th scope="row">{{i.nome_emprestado}}</th>
                 {% else %}
-                <th scope="row">{{emprestimo.nome_emprestado_anonimo}}</th>
+                <th scope="row">{{i.nome_emprestado_anonimo}}</th>
                 {% endif %}
-                <td>{{emprestimo.data_emprestimo}}</td>
-                <td>{{emprestimo.data_devolucao}}</td>
-                <td>{{emprestimo.data_devolucao|mostra_duracao:emprestimo.data_emprestimo}}</td>
+                <td>{{i.data_emprestimo}}</td>
+                {% if i.data_devolucao == None %}
+                <td></td>
+                {% else %}
+                <td>{{i.data_devolucao}}</td>
+                {% endif %}
+                <td>{{i.data_devolucao|mostra_duracao:i.data_emprestimo}}</td>
+                <td>
+                    {% if i.avaliacao == None %}
+                    <button onclick="avaliacao({{i.id}})" class="btn btn-info" data-toggle="modal"
+                        data-target="#exampleModal1">Avaliar</button>
+                    {% else %}
+                    {{i.avaliacao}}
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
 
+<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Avaliar empréstimo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'processa-avaliacao' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" id="id_livro" name="id_livro" value="{{id_livro}}">
+                    <input type="hidden" id="id_emprestimo" name="id_emprestimo">
+                    <select class="form-control" name="opcoes" id="opcoes">
+                        <option value="P">Péssimo</option>
+                        <option value="R">Ruim</option>
+                        <option value="B">Bom</option>
+                        <option value="O">Ótimo</option>
+                    </select>
+                    <br>
+                    <input type="submit" class="btn btn-info" value="Avaliar">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function avaliacao(id_emprestimo) {
+        input_emprestimo = document.getElementById('id_emprestimo')
+        input_emprestimo.value = id_emprestimo
+    }
+
+</script>
 
 {% endblock %}
