@@ -7,6 +7,9 @@ from usuarios.models import Usuario
 from .models import Livros, Categoria, Emprestimo
 from .forms import CadastroLivro, CategoriaLivro
 
+# TODO: Estética
+# TODO: Página inicial
+
 def home(request):
     if request.session.get('usuario'):
         usuario = Usuario.objects.get(id=request.session['usuario'])
@@ -127,9 +130,11 @@ def cadastrar_emprestimo(request):
 def devolver_livro(request):
     id = request.POST.get('id_livro_devolver')
     livro_devolver = Livros.objects.get(id=id)
+
     emprestimo_devolver = Emprestimo.objects.get(Q(livro=livro_devolver) & Q(data_devolucao=None))
     emprestimo_devolver.data_devolucao = datetime.now()
     emprestimo_devolver.save()
+
     livro_devolver.emprestado = False
     livro_devolver.save()
 
@@ -158,6 +163,7 @@ def seus_emprestimos(request):
     usuario = Usuario.objects.get(id=request.session['usuario'])
     emprestimos = Emprestimo.objects.filter(nome_emprestado=usuario)
 
+    #TODO: Colocar variáeis necessárias para botão opções
 
     return render(request, 'seus_emprestimos.html', {'usuario_logado': request.session['usuario'],
                                                      'emprestimos': emprestimos})
@@ -165,11 +171,14 @@ def seus_emprestimos(request):
 def processa_avaliacao(request):
     id_livro = request.POST.get('id_livro')
     id_emprestimo = request.POST.get('id_emprestimo')
-    opcoes = request.POST.get('opcoes')
+    opcoes = request.POST.get('opcoes')   
 
-    #TODO: Verificar segurança
     emprestimo = Emprestimo.objects.get(id=id_emprestimo)
-    emprestimo.avaliacao = opcoes
-    emprestimo.save()
+
+    if emprestimo.livro.usuario.id == request.session['usuario']:
+        emprestimo.avaliacao = opcoes
+        emprestimo.save()
+    else:
+        return HttpResponse('Esse empréstimo não é seu')
 
     return redirect(f'/livro/ver-livro/{id_livro}')

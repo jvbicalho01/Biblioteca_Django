@@ -13,6 +13,7 @@ class Categoria(models.Model):
         return self.nome
 
 class Livros(models.Model):
+    # TODO: Colocar imagens
     nome = models.CharField(max_length=100)
     autor = models.CharField(max_length=30)
     co_autor = models.CharField(max_length=30, blank=True)
