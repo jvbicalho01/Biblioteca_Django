@@ -163,10 +163,15 @@ def seus_emprestimos(request):
     usuario = Usuario.objects.get(id=request.session['usuario'])
     emprestimos = Emprestimo.objects.filter(nome_emprestado=usuario)
 
-    #TODO: Colocar variáeis necessárias para botão opções
+    form = CadastroLivro()
+    form.fields['usuario'].initial = request.session['usuario']
+    form.fields['categoria'].queryset = Categoria.objects.filter(usuario=usuario)
+    form_categoria = CategoriaLivro()
 
     return render(request, 'seus_emprestimos.html', {'usuario_logado': request.session['usuario'],
-                                                     'emprestimos': emprestimos})
+                                                     'emprestimos': emprestimos,
+                                                     'form': form,
+                                                     'form_categoria': form_categoria})
 
 def processa_avaliacao(request):
     id_livro = request.POST.get('id_livro')
